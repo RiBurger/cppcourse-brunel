@@ -63,11 +63,12 @@ void Neuron::setTimeSpikes(std::vector<double> time)
 }
 */
 
+
 /*
  * not very well coded
  * isRefractory if the last spike was less than 20 steps ago (refractory period)
  */
-bool Neuron::isRefractory(int steps)
+bool Neuron::isRefractory(int steps) // inutile d'utiliser le temps global
 {
 	if(time_spikes.empty())
 	{
@@ -108,10 +109,7 @@ void Neuron::update(double dt, double courant)
 {
 	if(isRefractory(neuron_steps))
 	{
-		/*
-		 * should be V_reset and not 0
-		 */
-		membrane_pot = 0.0;
+		membrane_pot = reset_potential;
 	}
 	else 
 	{
@@ -134,18 +132,26 @@ void Neuron::update(double dt, double courant)
 	neuron_steps += 1; // the local time of the vector gets 1 step further
 }
 
-void Neuron::storeSpike(int steps)
+void Neuron::storeSpike(int steps, bool is_inhibitory)
 {
 	/*
 	 * The current number of steps modulo the delay (the size of the buffer)
 	 * is the rest from the division of the first by the latter. 
 	 */
-	buffer[steps % (delay_steps + 1)] += 1;
+	 if(is_inhibitory)
+	 {
+		 buffer[steps % (delay_steps + 1)] += (-5);
+	 }
+	 else
+	 {
+		 buffer[steps % (delay_steps + 1)] += 1;
+	 }
 }
 
-void Neuron::sendSpike(Neuron& n)
+void Neuron::sendSpike(Neuron& n, bool isInhibitory)
 {
-	n.storeSpike(neuron_steps + delay_steps - 1);
+	n.storeSpike(neuron_steps + delay_steps - 1, isInhibitory);
 }
+
 
 

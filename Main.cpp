@@ -3,21 +3,18 @@
 #include <iostream>
 #include <fstream>
 #include <climits>
+#include <array>
+#include <random>
 
 
-/*
-Les neurones ont l'air d'être réfractaires dans les premières steps :
- --> faire tests pour régler problème
+/**
+ * Les neurones ont l'air d'être réfractaires dans les premières steps :
+ * --> faire tests pour régler problème
 */
+
 
 int main()
 {
-	
-	std::vector<Neuron> neurons;
-	Neuron neuron;
-	neurons.push_back(neuron);
-	Neuron neuron1(10.0,0);
-	neurons.push_back(neuron1);
 	
 	double h(0.1); // time interval between two updates (in ms)
 	int a; // simulation steps after which the current is active
@@ -25,6 +22,60 @@ int main()
 	int n(2000); // final number of steps
 	int global_step(0); // global time of simulation in steps
 	double I_ext(0.0); // in pA (pico Ampère)
+	
+	constexpr int numb_of_neurons(100);
+	constexpr int numb_of_excitatory(numb_of_neurons*(4/5));
+	// constexpr int numb_of_inhibitory(numb_of_neurons*(1/5);
+	constexpr int numb_of_connections(numb_of_neurons/10);
+	constexpr int excitatory_connections(numb_of_excitatory/10);
+	// constexpr int inhibitory_connections(numb_of_inhibitory/10);
+	
+	
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> random_excitatory (0, numb_of_excitatory - 1);
+	std::uniform_int_distribution<> random_inhibitory (numb_of_excitatory, numb_of_neurons - 1);
+	
+	
+	/**
+	std::array<Neuron, numb_of_excitatory> excitatory_neurons; // initialiser inhibitory à false
+	std::array<Neuron, numb_of_inhibitory> inhibitory_neurons; // initialiser inhibitory à true
+	*/
+	
+	std::array<Neuron, numb_of_neurons> neurons;
+
+	std::array < std::array<int, numb_of_connections>, numb_of_neurons > targets;
+	
+	/**
+	for(int i(0); i < numb_of_neurons; ++i)
+	{
+		for(int j(0); j < excitatory_connections; ++j)
+		{
+			targets[i][j] = int random(0, excitatory_neurons);
+		}
+		
+		for(int k(0); k < inhibitory_connections; ++k)
+		{
+			targets[i][excitatory_connections + k] = int random(0, inhibitory_neurons);
+		}
+	}
+	*/
+	
+	for(int i(0); i < numb_of_neurons; ++i)
+	{
+		for(int j(0); j < numb_of_connections; ++j)
+		{
+			if(j < excitatory_connections)
+			{
+				targets[i][j] = random_excitatory(gen);
+			}
+			else
+			{
+				targets[i][j] = random_inhibitory(gen);
+			}
+		}
+	}
+	
 	
 	/*
 	 * asks the intensity of the current to the user
@@ -96,20 +147,23 @@ int main()
 		for (unsigned int i(0); i < neurons.size(); ++i) // checks every neuron
 		{
 			neurons[i].update(h, I);
-			/*
+			/**
 			 * writes the membrane potentials in the txt file
 			 */
-			neuron_potential << neurons[i].getPot() << " pA at t = " << global_step * h << " ms"<< '\t';
+			neuron_potential << neurons[i].getPot() << '\t'; // << " pA at t = " << global_step * h << " ms"<< '\t';
 			
-			if(i == 0)
+			if(neurons[i].hasJustSpiked(global_step))
 			{
-				/*
-				 * primary (not the best) way to link two neurons
-				 */
-				if(neurons[i].hasJustSpiked(global_step))
+				for(int j(0); j < numb_of_connections; ++j)
 				{
-					std::cout << "sendSpike" << std::endl;
-					neurons[i].sendSpike(neurons[i+1]);
+					if(i < numb_of_excitatory)
+					{
+						neurons[i].sendSpike(neurons[(targets[i][j])], false);
+					}
+					else
+					{
+						neurons[i].sendSpike(neurons[(targets[i][j])], true);
+					}
 				}
 			}
 		}

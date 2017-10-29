@@ -11,11 +11,12 @@ class Neuron
 {
 	private :
 	
-	static constexpr double C_ = 1.0;
-	static constexpr double tau_ = 20.0; // neuron time constant
-	static constexpr int refractory_period = 20; // in steps
-	static constexpr double treshold_potential = 20.0;
-	static constexpr double J_ = 4.0;
+	static constexpr double C_ = 1.0; /**<  */ 
+	static constexpr double tau_ = 20.0; /**< neuron time constant */
+	static constexpr int refractory_period = 20; /**< in steps */
+	static constexpr double treshold_potential = 20.0; 
+	static constexpr double J_ = 0.1;
+	static constexpr double reset_potential = 0.0;
 	
 	int neuron_steps = 0; // local time of the neuron
 	
@@ -27,6 +28,8 @@ class Neuron
 										   // and the time it is received
 										   
 	std::vector<int> buffer; // buffer of received spikes
+	
+	bool inhibitor = false;
 	
 	public :
 	
@@ -50,9 +53,9 @@ class Neuron
 	
 	void update(double dt, double courant);
 	
-	void storeSpike(int steps);
+	void storeSpike(int steps, bool is_inhibitory);
 	
-	void sendSpike(Neuron& neuron);
+	void sendSpike(Neuron& neuron, bool isInhibitory);
 	
 };
 
