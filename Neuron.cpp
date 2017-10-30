@@ -14,7 +14,7 @@ Neuron::Neuron(double pot, unsigned int spikes)
 Neuron::Neuron()
 	: membrane_pot(0.0), num_spikes(0), time_spikes()
 	{
-		/*
+		/**
 		 * provisional way to initiate the buffer
 		 */
 		for(size_t i = 0; i < delay_steps + 1; ++i)
@@ -64,7 +64,7 @@ void Neuron::setTimeSpikes(std::vector<double> time)
 */
 
 
-/*
+/**
  * not very well coded
  * isRefractory if the last spike was less than 20 steps ago (refractory period)
  */
@@ -72,7 +72,7 @@ bool Neuron::isRefractory(int steps) // inutile d'utiliser le temps global
 {
 	if(time_spikes.empty())
 	{
-		/*
+		/**
 		 * to avoid a seg fault by searching a value in a slot
 		 * of the vector which doesn't exist
 		 */
@@ -92,7 +92,7 @@ bool Neuron::hasJustSpiked(int steps)
 {
 	if(time_spikes.empty())
 	{
-		/*
+		/**
 		 * preventinf from checking an empty slot of the vector
 		 */
 		return false;
@@ -105,7 +105,7 @@ bool Neuron::hasJustSpiked(int steps)
 	return false;
 }
 
-void Neuron::update(double dt, double courant)
+void Neuron::update(double dt, double courant, int external_spikes)
 {
 	if(isRefractory(neuron_steps))
 	{
@@ -113,19 +113,19 @@ void Neuron::update(double dt, double courant)
 	}
 	else 
 	{
-		/*
-		 * computation of the membrane potential
+		/**
+		 * computation of the membrane potential, gotta add constants
 		 */
-		membrane_pot = exp(-dt/tau_) * membrane_pot + courant * (tau_ / C_) * (1 - exp(-dt/tau_)) + J_ * buffer[neuron_steps % (delay_steps + 1)];
+		membrane_pot = c1 * membrane_pot + courant * c2 * (1 - c1) + J_ * ( buffer[neuron_steps % (delay_steps + 1)] + external_spikes );
 		buffer[neuron_steps % (delay_steps + 1)] = 0; // reset the buffer's slot to zero, because it has been used
 		if(membrane_pot > treshold_potential)
 		{
-			/*
+			/**
 			 * the membrane potential has reached the treshold --> spike
 			 */
-			std::cout << "Seuil atteint" << std::endl;
+			// std::cout << "Seuil atteint" << std::endl;
 			time_spikes.push_back(neuron_steps + 1); // adds the time (in steps) of spike in the vector
-			std::cout << "Time : " << neuron_steps * dt << " ms" << std::endl;
+			// std::cout << "Time : " << neuron_steps * dt << " ms" << std::endl;
 			num_spikes += 1;
 		}
 	}
@@ -134,16 +134,18 @@ void Neuron::update(double dt, double courant)
 
 void Neuron::storeSpike(int steps, bool is_inhibitory)
 {
-	/*
+	/**
 	 * The current number of steps modulo the delay (the size of the buffer)
 	 * is the rest from the division of the first by the latter. 
 	 */
 	 if(is_inhibitory)
 	 {
+		 // std::cout << "spike inhibiteur" << std::endl;
 		 buffer[steps % (delay_steps + 1)] += (-5);
 	 }
 	 else
 	 {
+		 // std::cout << "spike excitateur" << std::endl;
 		 buffer[steps % (delay_steps + 1)] += 1;
 	 }
 }
