@@ -22,12 +22,15 @@ class Neuron
 		
 		static constexpr double C_ = 1.0; //!< Capacitance
 		static constexpr double tau_ = 20.0; //!< Neuron time constant
-		static constexpr int refractory_period = 20; //!< The neuron is refractory during this number of steps
 		static constexpr double treshold_potential = 20.0; //!< The potential above which the neuron spikes
 		static constexpr double J_ = 0.1; //!< Spike amplitude
 		static constexpr double reset_potential = 0.0; //!< The potential at which a neuron which has just spiked comes back
 		static constexpr double c1 = exp(-(0.1/tau_)); //!< First constant useful in update
 		static constexpr double c2 = (tau_/C_ * (1 - c1)); //!< Second constant useful in update
+		
+		static constexpr int inhibitory_spike = (-5);
+		static constexpr int excitatory_spike = 1;
+		static constexpr int refractory_period = 20; //!< The neuron is refractory during this number of steps
 		static constexpr int delay_steps = 15; /** Delay time between the time a spike is sent by the first neuron
 													and the time it is received by the post-synaptic neuron */
 		

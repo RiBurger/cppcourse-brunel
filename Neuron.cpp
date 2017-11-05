@@ -184,11 +184,11 @@ void Neuron::storeSpike(int steps, bool is_inhibitory)
 	 */
 	 if(is_inhibitory)
 	 {
-		 buffer[steps % (delay_steps + 1)] += (-5);
+		 buffer[steps % (delay_steps + 1)] += inhibitory_spike;
 	 }
 	 else
 	 {
-		 buffer[steps % (delay_steps + 1)] += 1;
+		 buffer[steps % (delay_steps + 1)] += excitatory_spike;
 	 }
 }
 
