@@ -1,5 +1,7 @@
 # cppcourse-brunel
 
+This repository contains all my work from the last three weeks of project. My work from the previous weeks are in my initial repository (it was asked to change in the middle of the project), which is named *CS116-2017-eric-bergkvist*. So you can see there that I've produced a continuous work throughout the whole project, and I simply don't know how to merge my two repositories.
+
 To run the program, you have to put the following files in a document :
 - Neuron.h
 - Neuron.cpp
