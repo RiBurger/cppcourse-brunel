@@ -36,24 +36,36 @@ Neuron::Neuron()
 Neuron::~Neuron() {}
 
 
+/**
+ * @return : the membrane potential.
+ */
 double Neuron::getPot() const
 {
 	return membrane_pot;
 }
 
 
+/**
+ * @return : the number of spikes.
+ */
 unsigned int Neuron::getNum() const
 {
 	return num_spikes;
 }
 
 
+/**
+ * @return : the step of a specific spike occurance.
+ */
 double Neuron::getTimeSpikes(unsigned int spike_number) const
 {
 	return time_spikes[(spike_number)-1];
 } 
 
 
+/**
+ * @return : the whole ring buffer.
+ */
 std::vector<int> Neuron::getBuffer() const
 {
 	return buffer;
@@ -67,6 +79,9 @@ std::vector<int> Neuron::getBuffer() const
  * returns false.
  * 
  * @param steps : the current steps.
+ * 
+ * @return true : if the neuron is in a refractory state
+ * @return false : if the neuron is not in a refractory state
  */
 bool Neuron::isRefractory(int steps)
 {
@@ -92,6 +107,9 @@ bool Neuron::isRefractory(int steps)
  * last spike of the neuron is equal to the current step of simulation.
  * 
  * @param steps : the current step.
+ * 
+ * @return true : if the neuron has spiked at the current step.
+ * @return false : if the neuron has not spiked at the current step.
  */
 bool Neuron::hasJustSpiked(int steps)
 {

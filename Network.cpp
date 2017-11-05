@@ -75,7 +75,7 @@ void Network::set_current()
 /**
  * This function fills the targets vector with zeroes, and then links
  * every neuron with a random group of other neurons (via their ID,
- * represented as integers in the vector)
+ * represented as integers in the vector).
  */
 void Network::build_connections()
 {
@@ -116,7 +116,7 @@ void Network::build_connections()
  * This function runs the whole simulation. From the first step, to the
  * last, the neurons are updated one by one. It also writes the times
  * of spikes, and the ID of the neuron which spiked, in the 
- * NeuronGraph.txt file
+ * NeuronGraph.txt file.
  */
 void Network::run_simulation()
 {

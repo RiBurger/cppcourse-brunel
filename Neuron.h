@@ -35,7 +35,7 @@ class Neuron
 		
 		int neuron_steps = 0; //!< Local time of the neuron
 		double membrane_pot; //!< The potential of the neuron's membrane
-		unsigned int num_spikes; //!< The number of times the neuron has spiked
+		unsigned int num_spikes; //!< The number of times the neuron has spiked since the start of the simulation
 		std::vector<int> time_spikes; //!< A vector containing each step at which the neuron has spiked
 		std::vector<int> buffer; //!< Ring buffer of received spikes
 	

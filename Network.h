@@ -25,7 +25,7 @@ class Network
 	
 		int a; 															//!< Simulation steps after which the current is active
 		int b; 															//!< Simulation steps after which the current is inactive again
-		int n = 2000; 													//!< Final number of steps
+		int n = 10000; 													//!< Final number of steps
 		int global_step = 0; 											//!< Global time of simulation in steps
 		double I_ext = 0.0; 											//!< Current in pA (pico Ampère)
 			
